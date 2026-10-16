@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 mb-5" style="max-width: 850px; margin: 0 auto; overflow: hidden; border-radius: 15px;">
+        
+        <div class="card-header border-0 text-white p-4" style="background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);">
+            <div class="row align-items-center">
+                <div class="col-md-7 text-start">
+                    <h2 class="mb-1 fw-bold tracking-tight">DREAM SALES & SERVICE</h2>
+                    <p class="mb-0 opacity-75 small">
+                        Nr. Hiva Hospital, M.K Complex, Danta - 385120<br>
+                        <i class="bi bi-telephone-fill me-1"></i> +91 9662697714
+                    </p>
+                </div>
+                <div class="col-md-5 text-md-end mt-3 mt-md-0">
+                    <div class="bg-white text-primary d-inline-block px-4 py-2 rounded-pill fw-bold">
+                        INVOICE / SERVICE BILL
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-5 bg-white">
+            <div class="row mb-5 pb-3 border-bottom">
+                <div class="col-sm-6">
+                    <h6 class="text-primary text-uppercase fw-bold mb-3">Customer Details</h6>
+                    <div class="ps-2 border-start border-primary border-3">
+                        <h5 class="mb-1 fw-bold">{{ entry.customer_name }}</h5>
+                        <p class="text-muted mb-0">
+                            Mobile: <strong>{{ entry.customer_number }}</strong><br>
+                            Bike: {{ entry.bike_name }}<br>
+                            Vehicle No: <span class="badge bg-light text-dark border">{{ entry.bike_number }}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-6 text-sm-end mt-4 mt-sm-0">
+                    <h6 class="text-primary text-uppercase fw-bold mb-3">Bill Information</h6>
+                    <p class="text-muted mb-0">
+                        Date: <strong>{{ entry.created_at.strftime('%d-%m-%Y') if 'created_at' in entry else entry._id.generation_time.strftime('%d-%m-%Y') }}</strong><br>
+                        Time: {{ entry.created_at.strftime('%I:%M %p') if 'created_at' in entry else entry._id.generation_time.strftime('%I:%M %p') }}<br>
+                        Section: <span class="text-dark fw-bold">{{ entry.section | capitalize }}</span><br>
+                        Payment: <span class="text-dark">{{ entry.payment_mode }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead style="background-color: #f8faff;">
+                        <tr class="text-primary">
+                            <th style="width: 10%">#</th>
+                            <th style="width: 60%">Service Description</th>
+                            <th style="width: 30%" class="text-end">Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for serv in entry.services %}
+                        <tr>
+                            <td class="text-muted">{{ loop.index }}</td>
+                            <td class="fw-medium">{{ serv.desc }}</td>
+                            <td class="text-end fw-bold">₹{{ "{:,.2f}".format(serv.price | float) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="border-top-0">
+                        <tr>
+                            <td colspan="2" class="text-end border-0 pt-4"><h5 class="mb-0">Grand Total:</h5></td>
+                            <td class="text-end border-0 pt-4"><h5 class="text-primary fw-bold mb-0">₹{{ "{:,.2f}".format(entry.total | float) }}</h5></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-7">
+                    <div class="p-3 rounded-3" style="background-color: #f8faff; border: 1px solid #e1e8f0;">
+                        <h6 class="fw-bold text-dark mb-3">Payment Summary</h6>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Total Amount:</span>
+                            <span>₹{{ "{:,.2f}".format(entry.total | float) }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 text-success">
+                            <span>Paid Amount:</span>
+                            <span>- ₹{{ "{:,.2f}".format(entry.paid | float) }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between pt-2 border-top">
+                            <span class="fw-bold">Pending Balance:</span>
+                            <span class="fw-bold {% if entry.pending > 0 %}text-danger{% else %}text-success{% endif %}">
+                                ₹{{ "{:,.2f}".format(entry.pending | float) }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 text-center d-flex flex-column justify-content-center align-items-center mt-4 mt-md-0">
+                    <div class="mb-2">
+                        <i class="bi bi-patch-check-fill text-primary" style="font-size: 2.5rem;"></i>
+                    </div>
+                    <p class="mb-0 fw-bold text-primary">Safe Riding!</p>
+                    <small class="text-muted">Visit us again for better service.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white border-0 text-center pb-5">
+            <button class="btn btn-primary btn-lg px-5 shadow no-print" onclick="window.print()">
+                <i class="bi bi-printer-fill me-2"></i> Print Bill
+            </button>
+            <p class="mt-4 mb-0 x-small text-muted text-uppercase letter-spacing-1" style="font-size: 0.7rem;">
+                This is a computer generated invoice and does not require a physical signature.
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom Styling for Blue-White Theme */
+    .tracking-tight { letter-spacing: -0.5px; }
+    .fw-medium { font-weight: 500; }
+    
+    @media print {
+        .no-print, .navbar, .btn { display: none !important; }
+        body { background-color: white !important; margin: 0; padding: 0; }
+        .container { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+        .card { box-shadow: none !important; border: 1px solid #eee !important; border-radius: 0 !important; }
+        .card-header { background: #1a237e !important; color: white !important; -webkit-print-color-adjust: exact; }
+        .text-primary { color: #1a237e !important; }
+        .bg-light { background-color: #f8f9fa !important; }
+        .badge { border: 1px solid #ccc !important; color: black !important; }
+    }
+</style>
+{% endblock %}

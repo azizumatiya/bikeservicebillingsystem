@@ -1,0 +1,85 @@
+<!-- templates/section.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ section }}</h1>
+<h2>Add New Service</h2>
+<form method="post" id="serviceForm">
+    <div class="mb-3">
+        <label for="customer_name" class="form-label">Customer Name</label>
+        <input type="text" class="form-control" id="customer_name" name="customer_name" required>
+    </div>
+    <div class="mb-3">
+        <label for="customer_number" class="form-label">Customer Number</label>
+        <input type="text" class="form-control" id="customer_number" name="customer_number" required>
+    </div>
+    <div class="mb-3">
+        <label for="bike_name" class="form-label">Bike Name</label>
+        <input type="text" class="form-control" id="bike_name" name="bike_name" required>
+    </div>
+    <div class="mb-3">
+        <label for="bike_number" class="form-label">Bike Number</label>
+        <input type="text" class="form-control" id="bike_number" name="bike_number" required>
+    </div>
+    <h3>Services</h3>
+    <div id="services">
+        <div class="service-row row mb-2">
+            <div class="col-md-8">
+                <input type="text" name="service_desc_1" placeholder="Service Description" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <input type="number" name="price_1" placeholder="Price" class="form-control price" required>
+            </div>
+        </div>
+    </div>
+    <button type="button" id="addService" class="btn btn-secondary mb-3">Add Another Service</button>
+    <div class="mb-3">
+        <label for="total" class="form-label">Total</label>
+        <input type="number" class="form-control" id="total" name="total" readonly required>
+    </div>
+    <div class="mb-3">
+        <label for="payment_mode" class="form-label">Payment Mode</label>
+        <select class="form-select" id="payment_mode" name="payment_mode" required>
+            <option value="Online">Online</option>
+            <option value="Offline">Offline</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="paid" class="form-label">Paid Amount</label>
+        <input type="number" class="form-control" id="paid" name="paid" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+let serviceCount = 1;
+document.getElementById('addService').addEventListener('click', () => {
+    serviceCount++;
+    const div = document.createElement('div');
+    div.className = 'service-row row mb-2';
+    div.innerHTML = `
+        <div class="col-md-8">
+            <input type="text" name="service_desc_${serviceCount}" placeholder="Service Description" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+            <input type="number" name="price_${serviceCount}" placeholder="Price" class="form-control price" required>
+        </div>
+    `;
+    document.getElementById('services').appendChild(div);
+});
+
+function calculateTotal() {
+    let sum = 0;
+    document.querySelectorAll('.price').forEach(input => {
+        sum += parseFloat(input.value) || 0;
+    });
+    document.getElementById('total').value = sum;
+}
+
+document.addEventListener('input', (e) => {
+    if (e.target.classList.contains('price')) {
+        calculateTotal();
+    }
+});
+</script>
+
+{% endblock %}

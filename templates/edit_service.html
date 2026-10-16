@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-warning text-dark text-center">
+            <h3>સર્વિસ એડિટ કરો</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" id="editForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">ગ્રાહકનું નામ</label>
+                        <input type="text" class="form-control" name="customer_name" value="{{ entry.customer_name }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">મોબાઈલ નંબર</label>
+                        <input type="text" class="form-control" name="customer_number" value="{{ entry.customer_number }}" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">બાઇકનું નામ</label>
+                        <input type="text" class="form-control" name="bike_name" value="{{ entry.bike_name }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">બાઇક નંબર</label>
+                        <input type="text" class="form-control" name="bike_number" value="{{ entry.bike_number }}" required>
+                    </div>
+                </div>
+
+                <h4 class="mt-4">સર્વિસીસ</h4>
+                <div id="servicesContainer">
+                    {% for serv in entry.services %}
+                    <div class="row mb-3 service-row align-items-center">
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" name="service_desc_{{ loop.index }}" value="{{ serv.desc }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" step="0.01" class="form-control price" name="price_{{ loop.index }}" value="{{ serv.price }}" required>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-outline-danger btn-sm remove-row">×</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" class="btn btn-outline-primary mb-3" id="addServiceRow">
+                    + નવી સર્વિસ ઉમેરો
+                </button>
+
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">કુલ રકમ</label>
+                        <input type="number" step="0.01" class="form-control fw-bold" id="total" name="total" value="{{ entry.total }}" readonly required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">પેમેન્ટ મોડ</label>
+                        <select class="form-select" name="payment_mode" required>
+                            <option value="Online"  {% if entry.payment_mode == 'Online'  %}selected{% endif %}>Online</option>
+                            <option value="Offline" {% if entry.payment_mode == 'Offline' %}selected{% endif %}>Offline</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">આપેલી રકમ</label>
+                        <input type="number" step="0.01" class="form-control" name="paid" value="{{ entry.paid }}" required>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <a href="{{ url_for('home') }}" class="btn btn-secondary">રદ કરો</a>
+                    <button type="submit" class="btn btn-success">સેવ & અપડેટ કરો</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Row counter
+let rowCount = {{ entry.services|length or 0 }};
+
+// Add new service row
+document.getElementById('addServiceRow').addEventListener('click', () => {
+    rowCount++;
+    const container = document.getElementById('servicesContainer');
+    const row = document.createElement('div');
+    row.className = 'row mb-3 service-row align-items-center';
+    row.innerHTML = `
+        <div class="col-md-7">
+            <input type="text" class="form-control" name="service_desc_${rowCount}" required placeholder="સર્વિસ વર્ણન">
+        </div>
+        <div class="col-md-4">
+            <input type="number" step="0.01" class="form-control price" name="price_${rowCount}" required placeholder="રકમ">
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-outline-danger btn-sm remove-row">×</button>
+        </div>
+    `;
+    container.appendChild(row);
+    updateTotal();
+});
+
+// Remove row
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('remove-row')) {
+        e.target.closest('.service-row').remove();
+        updateTotal();
+    }
+});
+
+// Calculate total on input change
+function updateTotal() {
+    let sum = 0;
+    document.querySelectorAll('.price').forEach(el => {
+        sum += parseFloat(el.value) || 0;
+    });
+    document.getElementById('total').value = sum.toFixed(2);
+}
+
+document.addEventListener('input', e => {
+    if (e.target.classList.contains('price')) {
+        updateTotal();
+    }
+});
+
+updateTotal(); // Initial calculation
+</script>
+{% endblock %}

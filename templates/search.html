@@ -1,0 +1,31 @@
+<!-- templates/search.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h1>Search Results</h1>
+{% if results %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Customer Name</th>
+            <th>Customer Number</th>
+            <th>Bike Number</th>
+            <th>Section</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in results %}
+        <tr>
+            <td>{{ r.customer_name }}</td>
+            <td>{{ r.customer_number }}</td>
+            <td>{{ r.bike_number }}</td>
+            <td>{{ r.section | capitalize }}</td>
+            <td><a href="{{ url_for('bill', id=r._id) }}" class="btn btn-info btn-sm">Open Bill</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No results found.</p>
+{% endif %}
+{% endblock %}

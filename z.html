@@ -1,0 +1,2184 @@
+.<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>બાઈક સર્વિસ મેનેજમેન્ટ સિસ્ટમ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #4285f4;
+            --success-color: #34a853;
+            --warning-color: #fbbc04;
+            --danger-color: #ea4335;
+            --dark-color: #202124;
+            --light-color: #f8f9fa;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            margin: 5px 10px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link i {
+            margin-right: 5px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .search-container {
+            position: relative;
+            width: 300px;
+            margin: 10px 0;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .user-name {
+            margin-right: 15px;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background-color: #d33b2c;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            min-width: 150px;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .tab-btn:not(.active):hover {
+            background-color: rgba(26, 115, 232, 0.1);
+        }
+
+        .tab-btn i {
+            margin-right: 8px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Styles */
+        .form-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .form-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+            outline: none;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Service Item */
+        .service-item {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .service-name {
+            font-weight: 500;
+            width: 40%;
+            min-width: 200px;
+        }
+
+        .service-price {
+            width: 20%;
+            min-width: 120px;
+        }
+
+        .service-payment {
+            width: 20%;
+            min-width: 120px;
+        }
+
+        .service-remove {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .add-service-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .add-service-btn:hover {
+            background-color: #2e8b46;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #2e8b46;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d33b2c;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+
+        .data-table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .data-table th, .data-table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid #eee;
+            transition: var(--transition);
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-paid {
+            background-color: rgba(52, 168, 83, 0.2);
+            color: var(--success-color);
+        }
+
+        .status-pending {
+            background-color: rgba(251, 188, 4, 0.2);
+            color: var(--warning-color);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 18px;
+            margin-right: 10px;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Bill Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .bill-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .bill-garage-info {
+            margin-bottom: 20px;
+        }
+
+        .bill-garage-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .bill-garage-address {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .bill-garage-phone {
+            font-size: 16px;
+        }
+
+        .bill-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .bill-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .bill-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bill-info-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .bill-info-value {
+            font-size: 16px;
+        }
+
+        .bill-table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        .bill-table th, .bill-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .bill-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .bill-summary {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .bill-summary-table {
+            width: 50%;
+        }
+
+        .bill-summary-table td {
+            padding: 10px;
+        }
+
+        .bill-total {
+            font-weight: 600;
+            font-size: 18px;
+            border-top: 2px solid #eee;
+        }
+
+        .bill-footer {
+            margin-top: 30px;
+            text-align: center;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+
+        .print-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+
+        /* Login/Register Form */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+        }
+
+        .auth-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 30px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .auth-subtitle {
+            color: #666;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-input {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .auth-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+            outline: none;
+        }
+
+        .auth-btn {
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 20px;
+        }
+
+        .auth-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .auth-footer {
+            text-align: center;
+            color: #666;
+        }
+
+        .auth-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+        }
+
+        .toast {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .toast-icon {
+            margin-right: 15px;
+            font-size: 20px;
+        }
+
+        .toast.success .toast-icon {
+            color: var(--success-color);
+        }
+
+        .toast.error .toast-icon {
+            color: var(--danger-color);
+        }
+
+        .toast.warning .toast-icon {
+            color: var(--warning-color);
+        }
+
+        .toast-message {
+            flex: 1;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Settings Form */
+        .settings-form {
+            margin-top: 20px;
+        }
+
+        /* Monthly Report */
+        .report-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .report-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .month-filter {
+            display: flex;
+            align-items: center;
+        }
+
+        .month-filter select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            margin-left: 10px;
+        }
+
+        .report-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-card {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .report-card-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .report-card-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .report-card.online {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .report-card.offline {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .report-card.total {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-direction: column;
+            }
+
+            .nav-menu {
+                margin-top: 15px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-item {
+                margin: 0 5px;
+            }
+
+            .search-container {
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .data-table {
+                overflow-x: auto;
+            }
+
+            .bill-info {
+                grid-template-columns: 1fr;
+            }
+
+            .bill-summary-table {
+                width: 100%;
+            }
+
+            .service-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .service-name, .service-price, .service-payment {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .report-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login/Register Page -->
+    <div id="authPage" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-title">બાઈક સર્વિસ મેનેજમેન્ટ</div>
+                <div class="auth-subtitle" id="authSubtitle">લોગિન કરો</div>
+            </div>
+            <form id="authForm" class="auth-form">
+                <input type="tel" id="mobileNumber" class="auth-input" placeholder="મોબાઇલ નંબર" required>
+                <input type="password" id="password" class="auth-input" placeholder="પાસવર્ડ" required>
+                <button type="submit" class="auth-btn" id="authBtn">લોગિન</button>
+            </form>
+            <div class="auth-footer">
+                <span id="authFooterText">નવા યુઝર?</span>
+                <a href="#" class="auth-link" id="authToggle">રજિસ્ટર કરો</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" style="display: none;">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <div class="logo">
+                    <i class="fas fa-motorcycle"></i>
+                    <span>બાઈક સર્વિસ મેનેજમેન્ટ</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-section="garage">
+                            <i class="fas fa-wrench"></i> ગેરેજ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="showroom">
+                            <i class="fas fa-store"></i> શોરૂમ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="reports">
+                            <i class="fas fa-chart-bar"></i> રિપોર્ટ્સ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="settings">
+                            <i class="fas fa-cog"></i> સેટિંગ્સ
+                        </a>
+                    </li>
+                </ul>
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="નામ, નંબર અથવા બાઈક નંબર દ્વારા શોધો">
+                    <button class="search-btn" id="searchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="user-info">
+                    <span class="user-name" id="userName">યુઝર</span>
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> લોગઆઉટ
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Container -->
+        <div class="container">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="addService">
+                    <i class="fas fa-plus-circle"></i> સર્વિસ ઉમેરો
+                </button>
+                <button class="tab-btn" data-tab="serviceList">
+                    <i class="fas fa-list"></i> સર્વિસ યાદી
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content active" id="addServiceTab">
+                <div class="form-container">
+                    <h2 class="form-title">નવી સર્વિસ ઉમેરો</h2>
+                    <form id="serviceForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="customerName">ગ્રાહકનું નામ</label>
+                                <input type="text" class="form-input" id="customerName" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="customerNumber">ગ્રાહકનો નંબર</label>
+                                <input type="tel" class="form-input" id="customerNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="bikeName">બાઈકનું નામ</label>
+                                <input type="text" class="form-input" id="bikeName" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="bikeNumber">બાઈક નંબર</label>
+                                <input type="text" class="form-input" id="bikeNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="serviceType">સર્વિસ પ્રકાર</label>
+                                <select class="form-select" id="serviceType" required>
+                                    <option value="">સર્વિસ પ્રકાર પસંદ કરો</option>
+                                    <option value="સામાન્ય સર્વિસ">સામાન્ય સર્વિસ</option>
+                                    <option value="ઓઇલ ચેન્જ">ઓઇલ ચેન્જ</option>
+                                    <option value="ટાયર ચેન્જ">ટાયર ચેન્જ</option>
+                                    <option value="બ્રેક સર્વિસ">બ્રેક સર્વિસ</option>
+                                    <option value="એન્જિન સર્વિસ">એન્જિન સર્વિસ</option>
+                                    <option value="અન્ય">અન્ય (લખો)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="customServiceGroup" style="display: none;">
+                                <label class="form-label" for="customService">કસ્ટમ સર્વિસ</label>
+                                <input type="text" class="form-input" id="customService" placeholder="સર્વિસનું નામ લખો">
+                            </div>
+                        </div>
+
+                        <h3 style="margin: 20px 0;">સર્વિસ વિગતો</h3>
+                        <div id="servicesContainer">
+                            <div class="service-item">
+                                <div class="service-name">
+                                    <input type="text" class="form-input service-name-input" placeholder="સર્વિસનું નામ">
+                                </div>
+                                <div class="service-price">
+                                    <input type="number" class="form-input service-price-input" placeholder="કિંમત">
+                                </div>
+                                <div class="service-payment">
+                                    <select class="form-select service-payment-select">
+                                        <option value="online">ઓનલાઇન</option>
+                                        <option value="offline">ઓફલાઇન</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="service-remove">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="add-service-btn" id="addServiceBtn">
+                            <i class="fas fa-plus"></i> સર્વિસ ઉમેરો
+                        </button>
+
+                        <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3>કુલ રકમ: <span id="totalAmount">0</span> રૂપિયા</h3>
+                                <div style="margin-top: 10px;">
+                                    <label style="font-weight: 500;">ચુકવણી સ્થિતિ:</label>
+                                    <select class="form-select" id="paymentStatus" style="width: 200px; margin-left: 10px;">
+                                        <option value="pending">બાકી</option>
+                                        <option value="paid">ચૂકવાયેલ</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> સર્વિસ સાચવો
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="tab-content" id="serviceListTab">
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ગ્રાહકનું નામ</th>
+                                <th>મોબાઇલ નંબર</th>
+                                <th>બાઈક નામ</th>
+                                <th>બાઈક નંબર</th>
+                                <th>સર્વિસ પ્રકાર</th>
+                                <th>કુલ રકમ</th>
+                                <th>ચુકવણી સ્થિતિ</th>
+                                <th>ક્રિયા</th>
+                            </tr>
+                        </thead>
+                        <tbody id="serviceTableBody">
+                            <!-- Table rows will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-content" id="reportsTab">
+                <div class="report-container">
+                    <div class="report-header">
+                        <h2 class="report-title">માસિક રિપોર્ટ</h2>
+                        <div class="month-filter">
+                            <label for="reportMonth">મહિનો:</label>
+                            <select id="reportMonth">
+                                <option value="0">જાન્યુઆરી</option>
+                                <option value="1">ફેબ્રુઆરી</option>
+                                <option value="2">માર્ચ</option>
+                                <option value="3">એપ્રિલ</option>
+                                <option value="4">મે</option>
+                                <option value="5">જૂન</option>
+                                <option value="6">જુલાઈ</option>
+                                <option value="7">ઓગસ્ટ</option>
+                                <option value="8">સપ્ટેમ્બર</option>
+                                <option value="9">ઓક્ટોબર</option>
+                                <option value="10">નવેમ્બર</option>
+                                <option value="11">ડિસેમ્બર</option>
+                            </select>
+                            <label for="reportYear" style="margin-left: 10px;">વર્ષ:</label>
+                            <select id="reportYear">
+                                <!-- Year options will be added dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="report-cards">
+                        <div class="report-card online">
+                            <div class="report-card-title">ઓનલાઇન ચુકવણી</div>
+                            <div class="report-card-value" id="onlinePayment">₹0</div>
+                        </div>
+                        <div class="report-card offline">
+                            <div class="report-card-title">ઓફલાઇન ચુકવણી</div>
+                            <div class="report-card-value" id="offlinePayment">₹0</div>
+                        </div>
+                        <div class="report-card total">
+                            <div class="report-card-title">કુલ આવક</div>
+                            <div class="report-card-value" id="totalRevenue">₹0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="monthlyChart" class="chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="settingsTab">
+                <div class="form-container">
+                    <h2 class="form-title">ગેરેજ સેટિંગ્સ</h2>
+                    <form id="settingsForm" class="settings-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="garageName">ગેરેજનું નામ</label>
+                                <input type="text" class="form-input" id="garageName" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="garageAddress">સરનામું</label>
+                                <input type="text" class="form-input" id="garageAddress" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="garagePhone">ફોન નંબર</label>
+                                <input type="tel" class="form-input" id="garagePhone" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="garageEmail">ઈમેઇલ</label>
+                                <input type="email" class="form-input" id="garageEmail">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> સેટિંગ્સ સાચવો
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bill Modal -->
+    <div class="modal" id="billModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">બિલ</h2>
+                <button class="close-modal" id="closeBillModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="bill-header">
+                    <div class="bill-garage-info">
+                        <div class="bill-garage-name" id="billGarageName">ગેરેજ નામ</div>
+                        <div class="bill-garage-address" id="billGarageAddress">સરનામું</div>
+                        <div class="bill-garage-phone" id="billGaragePhone">ફોન નંબર</div>
+                    </div>
+                    <div class="bill-title">બાઈક સર્વિસ બિલ</div>
+                    <div>તારીખ: <span id="billDate"></span></div>
+                </div>
+                <div class="bill-info">
+                    <div class="bill-info-item">
+                        <span class="bill-info-label">ગ્રાહકનું નામ:</span>
+                        <span class="bill-info-value" id="billCustomerName"></span>
+                    </div>
+                    <div class="bill-info-item">
+                        <span class="bill-info-label">મોબાઇલ નંબર:</span>
+                        <span class="bill-info-value" id="billCustomerNumber"></span>
+                    </div>
+                    <div class="bill-info-item">
+                        <span class="bill-info-label">બાઈક નામ:</span>
+                        <span class="bill-info-value" id="billBikeName"></span>
+                    </div>
+                    <div class="bill-info-item">
+                        <span class="bill-info-label">બાઈક નંબર:</span>
+                        <span class="bill-info-value" id="billBikeNumber"></span>
+                    </div>
+                </div>
+                <table class="bill-table">
+                    <thead>
+                        <tr>
+                            <th>સર્વિસ</th>
+                            <th>કિંમત</th>
+                            <th>ચુકવણી પદ્ધતિ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="billServiceItems">
+                        <!-- Service items will be added dynamically -->
+                    </tbody>
+                </table>
+                <div class="bill-summary">
+                    <table class="bill-summary-table">
+                        <tr>
+                            <td>ઉપ-કુલ:</td>
+                            <td id="billSubtotal">0 રૂપિયા</td>
+                        </tr>
+                        <tr>
+                            <td>ટેક્સ (18%):</td>
+                            <td id="billTax">0 રૂપિયા</td>
+                        </tr>
+                        <tr class="bill-total">
+                            <td>કુલ:</td>
+                            <td id="billTotal">0 રૂપિયા</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="bill-footer">
+                    <div>ચુકવણી સ્થિતિ: <span id="billPaymentStatus"></span></div>
+                    <button class="print-btn" id="printBill">
+                        <i class="fas fa-print"></i> પ્રિન્ટ કરો
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Chart.js for monthly reports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // Data Store (simulating MongoDB)
+        const dataStore = {
+            users: [],
+            services: [],
+            settings: {
+                garageName: 'મારી ગેરેજ',
+                garageAddress: 'ગેરેજ સરનામું',
+                garagePhone: '1234567890',
+                garageEmail: 'garage@example.com'
+            }
+        };
+
+        // Current User
+        let currentUser = null;
+        let monthlyChart = null;
+
+        // MongoDB Connection (mock)
+        const mongoDB = {
+            // In a real application, this would connect to a MongoDB server
+            connect: async () => {
+                console.log('Connecting to MongoDB...');
+                // Simulate connection delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log('Connected to MongoDB');
+                return true;
+            },
+            
+            // Save data to collection
+            save: async (collection, data) => {
+                console.log(`Saving to ${collection}:`, data);
+                // Simulate save operation
+                await new Promise(resolve => setTimeout(resolve, 500));
+                return true;
+            },
+            
+            // Find data in collection
+            find: async (collection, query) => {
+                console.log(`Finding in ${collection} with query:`, query);
+                // Simulate find operation
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                if (collection === 'users') {
+                    return dataStore.users.filter(user => {
+                        if (query.mobileNumber) {
+                            return user.mobileNumber === query.mobileNumber;
+                        }
+                        if (query.id) {
+                            return user.id === query.id;
+                        }
+                        return true;
+                    });
+                }
+                
+                if (collection === 'services') {
+                    return dataStore.services.filter(service => {
+                        if (query.userId) {
+                            return service.userId === query.userId;
+                        }
+                        if (query.id) {
+                            return service.id === query.id;
+                        }
+                        return true;
+                    });
+                }
+                
+                return [];
+            },
+            
+            // Update data in collection
+            update: async (collection, query, updateData) => {
+                console.log(`Updating in ${collection} with query:`, query, 'Data:', updateData);
+                // Simulate update operation
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                if (collection === 'services' && query.id) {
+                    const index = dataStore.services.findIndex(service => service.id === query.id);
+                    if (index !== -1) {
+                        dataStore.services[index] = { ...dataStore.services[index], ...updateData };
+                        return true;
+                    }
+                }
+                
+                return false;
+            },
+            
+            // Delete data from collection
+            delete: async (collection, query) => {
+                console.log(`Deleting from ${collection} with query:`, query);
+                // Simulate delete operation
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                if (collection === 'services' && query.id) {
+                    const index = dataStore.services.findIndex(service => service.id === query.id);
+                    if (index !== -1) {
+                        dataStore.services.splice(index, 1);
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+        };
+
+        // DOM Elements
+        const authPage = document.getElementById('authPage');
+        const mainApp = document.getElementById('mainApp');
+        const authForm = document.getElementById('authForm');
+        const authBtn = document.getElementById('authBtn');
+        const authSubtitle = document.getElementById('authSubtitle');
+        const authFooterText = document.getElementById('authFooterText');
+        const authToggle = document.getElementById('authToggle');
+        const mobileNumberInput = document.getElementById('mobileNumber');
+        const passwordInput = document.getElementById('password');
+        const userName = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const serviceForm = document.getElementById('serviceForm');
+        const serviceTypeSelect = document.getElementById('serviceType');
+        const customServiceGroup = document.getElementById('customServiceGroup');
+        const customServiceInput = document.getElementById('customService');
+        const servicesContainer = document.getElementById('servicesContainer');
+        const addServiceBtn = document.getElementById('addServiceBtn');
+        const totalAmountSpan = document.getElementById('totalAmount');
+        const paymentStatusSelect = document.getElementById('paymentStatus');
+        const serviceTableBody = document.getElementById('serviceTableBody');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const billModal = document.getElementById('billModal');
+        const closeBillModal = document.getElementById('closeBillModal');
+        const printBillBtn = document.getElementById('printBill');
+        const settingsForm = document.getElementById('settingsForm');
+        const reportMonth = document.getElementById('reportMonth');
+        const reportYear = document.getElementById('reportYear');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Connect to MongoDB
+            await mongoDB.connect();
+            
+            loadFromLocalStorage();
+            checkAuth();
+            setupEventListeners();
+            initializeReportFilters();
+            initializeChart();
+        });
+
+        // Load data from localStorage
+        function loadFromLocalStorage() {
+            const users = localStorage.getItem('bikeServiceUsers');
+            const services = localStorage.getItem('bikeServiceServices');
+            const settings = localStorage.getItem('bikeServiceSettings');
+            
+            if (users) {
+                dataStore.users = JSON.parse(users);
+            }
+            
+            if (services) {
+                dataStore.services = JSON.parse(services);
+            }
+            
+            if (settings) {
+                dataStore.settings = JSON.parse(settings);
+            }
+        }
+
+        // Save data to localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('bikeServiceUsers', JSON.stringify(dataStore.users));
+            localStorage.setItem('bikeServiceServices', JSON.stringify(dataStore.services));
+            localStorage.setItem('bikeServiceSettings', JSON.stringify(dataStore.settings));
+        }
+
+        // Check if user is authenticated
+        function checkAuth() {
+            const authenticatedUser = localStorage.getItem('bikeServiceCurrentUser');
+            
+            if (authenticatedUser) {
+                currentUser = JSON.parse(authenticatedUser);
+                showMainApp();
+            } else {
+                showAuthPage();
+            }
+        }
+
+        // Show authentication page
+        function showAuthPage() {
+            authPage.style.display = 'flex';
+            mainApp.style.display = 'none';
+        }
+
+        // Show main application
+        function showMainApp() {
+            authPage.style.display = 'none';
+            mainApp.style.display = 'block';
+            userName.textContent = currentUser.mobileNumber;
+            loadServiceList();
+            loadSettings();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Auth toggle (login/register)
+            authToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isLogin = authBtn.textContent === 'લોગિન';
+                
+                if (isLogin) {
+                    authSubtitle.textContent = 'રજિસ્ટર કરો';
+                    authBtn.textContent = 'રજિસ્ટર';
+                    authFooterText.textContent = 'પહેલાથી જ એકાઉન્ટ છે?';
+                    authToggle.textContent = 'લોગિન કરો';
+                } else {
+                    authSubtitle.textContent = 'લોગિન કરો';
+                    authBtn.textContent = 'લોગિન';
+                    authFooterText.textContent = 'નવા યુઝર?';
+                    authToggle.textContent = 'રજિસ્ટર કરો';
+                }
+            });
+
+            // Auth form submission
+            authForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const mobileNumber = mobileNumberInput.value.trim();
+                const password = passwordInput.value.trim();
+                const isLogin = authBtn.textContent === 'લોગિન';
+                
+                if (isLogin) {
+                    // Login
+                    const users = await mongoDB.find('users', { mobileNumber });
+                    const user = users.find(u => u.password === password);
+                    
+                    if (user) {
+                        currentUser = user;
+                        localStorage.setItem('bikeServiceCurrentUser', JSON.stringify(user));
+                        showToast('સફળતાપૂર્વક લોગિન થયું', 'success');
+                        showMainApp();
+                        authForm.reset();
+                    } else {
+                        showToast('અયોગ્ય મોબાઇલ નંબર અથવા પાસવર્ડ', 'error');
+                    }
+                } else {
+                    // Register
+                    const existingUsers = await mongoDB.find('users', { mobileNumber });
+                    
+                    if (existingUsers.length > 0) {
+                        showToast('આ મોબાઇલ નંબરથી પહેલાથી જ એકાઉન્ટ છે', 'error');
+                    } else {
+                        const newUser = {
+                            id: Date.now().toString(),
+                            mobileNumber,
+                            password
+                        };
+                        
+                        await mongoDB.save('users', newUser);
+                        dataStore.users.push(newUser);
+                        saveToLocalStorage();
+                        
+                        currentUser = newUser;
+                        localStorage.setItem('bikeServiceCurrentUser', JSON.stringify(newUser));
+                        showToast('સફળતાપૂર્વક રજિસ્ટર થયું', 'success');
+                        showMainApp();
+                        authForm.reset();
+                    }
+                }
+            });
+
+            // Logout
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('bikeServiceCurrentUser');
+                currentUser = null;
+                showToast('સફળતાપૂર્વક લોગઆઉટ થયું', 'success');
+                showAuthPage();
+            });
+
+            // Navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    const section = link.dataset.section;
+                    
+                    // Hide all tabs
+                    tabContents.forEach(tab => tab.classList.remove('active'));
+                    
+                    // Show appropriate tab based on section
+                    if (section === 'garage') {
+                        document.querySelector('[data-tab="addService"]').click();
+                    } else if (section === 'showroom') {
+                        document.querySelector('[data-tab="serviceList"]').click();
+                        showToast('શોરૂમ સેક્શન', 'success');
+                    } else if (section === 'reports') {
+                        document.getElementById('reportsTab').classList.add('active');
+                        updateMonthlyReport();
+                    } else if (section === 'settings') {
+                        document.getElementById('settingsTab').classList.add('active');
+                    }
+                });
+            });
+
+            // Tab buttons
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.dataset.tab;
+                    
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    document.getElementById(`${tabId}Tab`).classList.add('active');
+                });
+            });
+
+            // Service type change
+            serviceTypeSelect.addEventListener('change', () => {
+                if (serviceTypeSelect.value === 'અન્ય') {
+                    customServiceGroup.style.display = 'block';
+                } else {
+                    customServiceGroup.style.display = 'none';
+                }
+            });
+
+            // Add service button
+            addServiceBtn.addEventListener('click', () => {
+                const serviceItem = document.createElement('div');
+                serviceItem.className = 'service-item';
+                serviceItem.innerHTML = `
+                    <div class="service-name">
+                        <input type="text" class="form-input service-name-input" placeholder="સર્વિસનું નામ">
+                    </div>
+                    <div class="service-price">
+                        <input type="number" class="form-input service-price-input" placeholder="કિંમત">
+                    </div>
+                    <div class="service-payment">
+                        <select class="form-select service-payment-select">
+                            <option value="online">ઓનલાઇન</option>
+                            <option value="offline">ઓફલાઇન</option>
+                        </select>
+                    </div>
+                    <button type="button" class="service-remove">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                
+                servicesContainer.appendChild(serviceItem);
+                
+                // Add remove button event
+                serviceItem.querySelector('.service-remove').addEventListener('click', () => {
+                    serviceItem.remove();
+                    calculateTotal();
+                });
+                
+                // Add input change event
+                serviceItem.querySelectorAll('input, select').forEach(input => {
+                    input.addEventListener('input', calculateTotal);
+                    input.addEventListener('change', calculateTotal);
+                });
+            });
+
+            // Service form submission
+            serviceForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const customerName = document.getElementById('customerName').value.trim();
+                const customerNumber = document.getElementById('customerNumber').value.trim();
+                const bikeName = document.getElementById('bikeName').value.trim();
+                const bikeNumber = document.getElementById('bikeNumber').value.trim();
+                const serviceType = serviceTypeSelect.value === 'અન્ય' 
+                    ? customServiceInput.value.trim() 
+                    : serviceTypeSelect.value;
+                
+                if (!serviceType) {
+                    showToast('કૃપા કરીને સર્વિસ પ્રકાર પસંદ કરો', 'error');
+                    return;
+                }
+                
+                // Get service items
+                const serviceItems = [];
+                let totalAmount = 0;
+                
+                document.querySelectorAll('.service-item').forEach(item => {
+                    const serviceName = item.querySelector('.service-name-input').value.trim();
+                    const servicePrice = parseFloat(item.querySelector('.service-price-input').value) || 0;
+                    const paymentMethod = item.querySelector('.service-payment-select').value;
+                    
+                    if (serviceName && servicePrice > 0) {
+                        serviceItems.push({
+                            name: serviceName,
+                            price: servicePrice,
+                            paymentMethod
+                        });
+                        totalAmount += servicePrice;
+                    }
+                });
+                
+                if (serviceItems.length === 0) {
+                    showToast('કૃપા કરીને ઓછામાં ઓછી એક સર્વિસ ઉમેરો', 'error');
+                    return;
+                }
+                
+                // Create service record
+                const service = {
+                    id: Date.now().toString(),
+                    userId: currentUser.id,
+                    customerName,
+                    customerNumber,
+                    bikeName,
+                    bikeNumber,
+                    serviceType,
+                    serviceItems,
+                    totalAmount,
+                    paymentStatus: paymentStatusSelect.value,
+                    date: new Date().toISOString()
+                };
+                
+                await mongoDB.save('services', service);
+                dataStore.services.push(service);
+                saveToLocalStorage();
+                
+                showToast('સર્વિસ સફળતાપૂર્વક સાચવાઈ', 'success');
+                serviceForm.reset();
+                calculateTotal();
+                loadServiceList();
+                
+                // Switch to service list tab
+                document.querySelector('[data-tab="serviceList"]').click();
+            });
+
+            // Settings form submission
+            settingsForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const garageName = document.getElementById('garageName').value.trim();
+                const garageAddress = document.getElementById('garageAddress').value.trim();
+                const garagePhone = document.getElementById('garagePhone').value.trim();
+                const garageEmail = document.getElementById('garageEmail').value.trim();
+                
+                dataStore.settings = {
+                    garageName,
+                    garageAddress,
+                    garagePhone,
+                    garageEmail
+                };
+                
+                // Save to MongoDB (in a real app)
+                await mongoDB.save('settings', dataStore.settings);
+                saveToLocalStorage();
+                
+                showToast('સેટિંગ્સ સફળતાપૂર્વક સાચવાઈ', 'success');
+            });
+
+            // Search functionality
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            // Close bill modal
+            closeBillModal.addEventListener('click', () => {
+                billModal.classList.remove('active');
+            });
+
+            // Print bill
+            printBillBtn.addEventListener('click', () => {
+                window.print();
+            });
+
+            // Report filters
+            reportMonth.addEventListener('change', updateMonthlyReport);
+            reportYear.addEventListener('change', updateMonthlyReport);
+
+            // Initial calculation
+            calculateTotal();
+        }
+
+        // Calculate total amount
+        function calculateTotal() {
+            let total = 0;
+            
+            document.querySelectorAll('.service-price-input').forEach(input => {
+                const price = parseFloat(input.value) || 0;
+                total += price;
+            });
+            
+            totalAmountSpan.textContent = total;
+        }
+
+        // Load service list
+        async function loadServiceList() {
+            serviceTableBody.innerHTML = '';
+            
+            const services = await mongoDB.find('services', { userId: currentUser.id });
+            
+            if (services.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="8" style="text-align: center;">કોઈ સર્વિસ રેકોર્ડ મળ્યા નથી</td>`;
+                serviceTableBody.appendChild(row);
+                return;
+            }
+            
+            services.forEach(service => {
+                const row = document.createElement('tr');
+                
+                const statusClass = service.paymentStatus === 'paid' 
+                    ? 'status-paid' 
+                    : 'status-pending';
+                const statusText = service.paymentStatus === 'paid' 
+                    ? 'ચૂકવાયેલ' 
+                    : 'બાકી';
+                
+                row.innerHTML = `
+                    <td>${service.customerName}</td>
+                    <td>${service.customerNumber}</td>
+                    <td>${service.bikeName}</td>
+                    <td>${service.bikeNumber}</td>
+                    <td>${service.serviceType}</td>
+                    <td>${service.totalAmount} રૂપિયા</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="action-btn view-bill-btn" data-id="${service.id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn edit-service-btn" data-id="${service.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-service-btn" data-id="${service.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                serviceTableBody.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.view-bill-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const serviceId = btn.dataset.id;
+                    viewBill(serviceId);
+                });
+            });
+            
+            document.querySelectorAll('.edit-service-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const serviceId = btn.dataset.id;
+                    editService(serviceId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-service-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const serviceId = btn.dataset.id;
+                    deleteService(serviceId);
+                });
+            });
+        }
+
+        // Load settings
+        function loadSettings() {
+            document.getElementById('garageName').value = dataStore.settings.garageName;
+            document.getElementById('garageAddress').value = dataStore.settings.garageAddress;
+            document.getElementById('garagePhone').value = dataStore.settings.garagePhone;
+            document.getElementById('garageEmail').value = dataStore.settings.garageEmail || '';
+        }
+
+        // Initialize report filters
+        function initializeReportFilters() {
+            const currentYear = new Date().getFullYear();
+            const yearSelect = document.getElementById('reportYear');
+            
+            // Add options for the last 5 years
+            for (let i = 0; i < 5; i++) {
+                const option = document.createElement('option');
+                option.value = currentYear - i;
+                option.textContent = currentYear - i;
+                if (i === 0) {
+                    option.selected = true;
+                }
+                yearSelect.appendChild(option);
+            }
+            
+            // Set current month
+            const currentMonth = new Date().getMonth();
+            document.getElementById('reportMonth').value = currentMonth;
+        }
+
+        // Initialize chart
+        function initializeChart() {
+            const ctx = document.getElementById('monthlyChart').getContext('2d');
+            monthlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['જાન્યુઆરી', 'ફેબ્રુઆરી', 'માર્ચ', 'એપ્રિલ', 'મે', 'જૂન', 'જુલાઈ', 'ઓગસ્ટ', 'સપ્ટેમ્બર', 'ઓક્ટોબર', 'નવેમ્બર', 'ડિસેમ્બર'],
+                    datasets: [
+                        {
+                            label: 'ઓનલાઇન ચુકવણી',
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            backgroundColor: 'rgba(26, 115, 232, 0.7)',
+                            borderColor: 'rgba(26, 115, 232, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'ઓફલાઇન ચુકવણી',
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            backgroundColor: 'rgba(52, 168, 83, 0.7)',
+                            borderColor: 'rgba(52, 168, 83, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ₹' + context.raw;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Update chart with data
+            updateChartData();
+        }
+
+        // Update chart data
+        async function updateChartData() {
+            const services = await mongoDB.find('services', { userId: currentUser.id });
+            const currentYear = new Date().getFullYear();
+            
+            // Initialize monthly data
+            const onlineData = new Array(12).fill(0);
+            const offlineData = new Array(12).fill(0);
+            
+            // Calculate monthly totals
+            services.forEach(service => {
+                const serviceDate = new Date(service.date);
+                if (serviceDate.getFullYear() === currentYear) {
+                    const month = serviceDate.getMonth();
+                    
+                    service.serviceItems.forEach(item => {
+                        if (item.paymentMethod === 'online') {
+                            onlineData[month] += item.price;
+                        } else {
+                            offlineData[month] += item.price;
+                        }
+                    });
+                }
+            });
+            
+            // Update chart
+            if (monthlyChart) {
+                monthlyChart.data.datasets[0].data = onlineData;
+                monthlyChart.data.datasets[1].data = offlineData;
+                monthlyChart.update();
+            }
+        }
+
+        // Update monthly report
+        async function updateMonthlyReport() {
+            const services = await mongoDB.find('services', { userId: currentUser.id });
+            const selectedMonth = parseInt(reportMonth.value);
+            const selectedYear = parseInt(reportYear.value);
+            
+            let onlinePayment = 0;
+            let offlinePayment = 0;
+            
+            services.forEach(service => {
+                const serviceDate = new Date(service.date);
+                if (serviceDate.getMonth() === selectedMonth && serviceDate.getFullYear() === selectedYear) {
+                    service.serviceItems.forEach(item => {
+                        if (item.paymentMethod === 'online') {
+                            onlinePayment += item.price;
+                        } else {
+                            offlinePayment += item.price;
+                        }
+                    });
+                }
+            });
+            
+            const totalRevenue = onlinePayment + offlinePayment;
+            
+            document.getElementById('onlinePayment').textContent = '₹' + onlinePayment;
+            document.getElementById('offlinePayment').textContent = '₹' + offlinePayment;
+            document.getElementById('totalRevenue').textContent = '₹' + totalRevenue;
+        }
+
+        // Perform search
+        async function performSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                loadServiceList();
+                return;
+            }
+            
+            serviceTableBody.innerHTML = '';
+            
+            const services = await mongoDB.find('services', { userId: currentUser.id });
+            
+            const filteredServices = services.filter(service => 
+                service.customerName.toLowerCase().includes(searchTerm) ||
+                service.customerNumber.includes(searchTerm) ||
+                service.bikeNumber.toLowerCase().includes(searchTerm)
+            );
+            
+            if (filteredServices.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="8" style="text-align: center;">કોઈ પરિણામો મળ્યા નથી</td>`;
+                serviceTableBody.appendChild(row);
+                return;
+            }
+            
+            filteredServices.forEach(service => {
+                const row = document.createElement('tr');
+                
+                const statusClass = service.paymentStatus === 'paid' 
+                    ? 'status-paid' 
+                    : 'status-pending';
+                const statusText = service.paymentStatus === 'paid' 
+                    ? 'ચૂકવાયેલ' 
+                    : 'બાકી';
+                
+                row.innerHTML = `
+                    <td>${service.customerName}</td>
+                    <td>${service.customerNumber}</td>
+                    <td>${service.bikeName}</td>
+                    <td>${service.bikeNumber}</td>
+                    <td>${service.serviceType}</td>
+                    <td>${service.totalAmount} રૂપિયા</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="action-btn view-bill-btn" data-id="${service.id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn edit-service-btn" data-id="${service.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-service-btn" data-id="${service.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                serviceTableBody.appendChild(row);
+            });
+            
+            // Re-add event listeners
+            document.querySelectorAll('.view-bill-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const serviceId = btn.dataset.id;
+                    viewBill(serviceId);
+                });
+            });
+        }
+
+        // View bill
+        async function viewBill(serviceId) {
+            const services = await mongoDB.find('services', { id: serviceId });
+            const service = services[0];
+            
+            if (!service) {
+                showToast('સર્વિસ મળી નહીં', 'error');
+                return;
+            }
+            
+            // Populate bill data
+            document.getElementById('billGarageName').textContent = dataStore.settings.garageName;
+            document.getElementById('billGarageAddress').textContent = dataStore.settings.garageAddress;
+            document.getElementById('billGaragePhone').textContent = dataStore.settings.garagePhone;
+            document.getElementById('billDate').textContent = new Date(service.date).toLocaleDateString('gu-IN');
+            document.getElementById('billCustomerName').textContent = service.customerName;
+            document.getElementById('billCustomerNumber').textContent = service.customerNumber;
+            document.getElementById('billBikeName').textContent = service.bikeName;
+            document.getElementById('billBikeNumber').textContent = service.bikeNumber;
+            
+            // Populate service items
+            const billServiceItems = document.getElementById('billServiceItems');
+            billServiceItems.innerHTML = '';
+            
+            service.serviceItems.forEach(item => {
+                const row = document.createElement('tr');
+                const paymentMethodText = item.paymentMethod === 'online' ? 'ઓનલાઇન' : 'ઓફલાઇન';
+                
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.price} રૂપિયા</td>
+                    <td>${paymentMethodText}</td>
+                `;
+                
+                billServiceItems.appendChild(row);
+            });
+            
+            // Calculate totals
+            const subtotal = service.totalAmount;
+            const tax = subtotal * 0.18;
+            const total = subtotal + tax;
+            
+            document.getElementById('billSubtotal').textContent = `${subtotal} રૂપિયા`;
+            document.getElementById('billTax').textContent = `${tax.toFixed(2)} રૂપિયા`;
+            document.getElementById('billTotal').textContent = `${total.toFixed(2)} રૂપિયા`;
+            
+            const paymentStatusText = service.paymentStatus === 'paid' ? 'ચૂકવાયેલ' : 'બાકી';
+            document.getElementById('billPaymentStatus').textContent = paymentStatusText;
+            
+            // Show modal
+            billModal.classList.add('active');
+        }
+
+        // Edit service
+        async function editService(serviceId) {
+            const services = await mongoDB.find('services', { id: serviceId });
+            const service = services[0];
+            
+            if (!service) {
+                showToast('સર્વિસ મળી નહીં', 'error');
+                return;
+            }
+            
+            // Populate form with service data
+            document.getElementById('customerName').value = service.customerName;
+            document.getElementById('customerNumber').value = service.customerNumber;
+            document.getElementById('bikeName').value = service.bikeName;
+            document.getElementById('bikeNumber').value = service.bikeNumber;
+            document.getElementById('serviceType').value = service.serviceType;
+            document.getElementById('paymentStatus').value = service.paymentStatus;
+            
+            // Clear existing service items
+            servicesContainer.innerHTML = '';
+            
+            // Add service items
+            service.serviceItems.forEach(item => {
+                const serviceItem = document.createElement('div');
+                serviceItem.className = 'service-item';
+                serviceItem.innerHTML = `
+                    <div class="service-name">
+                        <input type="text" class="form-input service-name-input" value="${item.name}">
+                    </div>
+                    <div class="service-price">
+                        <input type="number" class="form-input service-price-input" value="${item.price}">
+                    </div>
+                    <div class="service-payment">
+                        <select class="form-select service-payment-select">
+                            <option value="online" ${item.paymentMethod === 'online' ? 'selected' : ''}>ઓનલાઇન</option>
+                            <option value="offline" ${item.paymentMethod === 'offline' ? 'selected' : ''}>ઓફલાઇન</option>
+                        </select>
+                    </div>
+                    <button type="button" class="service-remove">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                
+                servicesContainer.appendChild(serviceItem);
+                
+                // Add remove button event
+                serviceItem.querySelector('.service-remove').addEventListener('click', () => {
+                    serviceItem.remove();
+                    calculateTotal();
+                });
+                
+                // Add input change event
+                serviceItem.querySelectorAll('input, select').forEach(input => {
+                    input.addEventListener('input', calculateTotal);
+                    input.addEventListener('change', calculateTotal);
+                });
+            });
+            
+            // Calculate total
+            calculateTotal();
+            
+            // Switch to add service tab
+            document.querySelector('[data-tab="addService"]').click();
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+            
+            showToast('સર્વિસ ફોર્મમાં લાવવામાં આવી', 'success');
+        }
+
+        // Delete service
+        async function deleteService(serviceId) {
+            if (!confirm('શું તમે ખરેખર આ સર્વિસ કાઢી નાખવા માંગો છો?')) {
+                return;
+            }
+            
+            const success = await mongoDB.delete('services', { id: serviceId });
+            
+            if (success) {
+                const index = dataStore.services.findIndex(s => s.id === serviceId);
+                if (index !== -1) {
+                    dataStore.services.splice(index, 1);
+                    saveToLocalStorage();
+                }
+                loadServiceList();
+                showToast('સર્વિસ સફળતાપૂર્વક કાઢી નાખાઈ', 'success');
+            } else {
+                showToast('સર્વિસ કાઢી નાખવામાં ભૂલ', 'error');
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = '';
+            if (type === 'success') {
+                icon = '<i class="fas fa-check-circle toast-icon"></i>';
+            } else if (type === 'error') {
+                icon = '<i class="fas fa-exclamation-circle toast-icon"></i>';
+            } else if (type === 'warning') {
+                icon = '<i class="fas fa-exclamation-triangle toast-icon"></i>';
+            }
+            
+            toast.innerHTML = `
+                ${icon}
+                <span class="toast-message">${message}</span>
+                <button class="toast-close"><i class="fas fa-times"></i></button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Add close button event
+            toast.querySelector('.toast-close').addEventListener('click', () => {
+                toast.remove();
+            });
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

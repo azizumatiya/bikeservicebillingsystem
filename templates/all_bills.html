@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">બધા બિલ / સર્વિસીસ</h1>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card shadow border-success">
+                <div class="card-body text-center">
+                    <h5 class="text-success">કુલ આવક (ઓલ ઓવર)</h5>
+                    <h3 class="fw-bold">₹{{ total_income }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow border-danger">
+                <div class="card-body text-center">
+                    <h5 class="text-danger">કુલ બાકી રકમ (ઓલ ઓવર)</h5>
+                    <h3 class="fw-bold">₹{{ total_pending }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if sorted_months %}
+        {% for month in sorted_months %}
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ month }} સર્વિસીસ</h5>
+                    <div class="text-end" style="font-size: 0.9rem;">
+                        <span class="badge bg-light text-dark me-2">આવક: ₹{{ monthly_totals[month]['income'] }}</span>
+                        <span class="badge bg-danger">બાકી: ₹{{ monthly_totals[month]['pending'] }}</span>
+                    </div>
+                </div>
+                
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ગ્રાહક</th>
+                                    <th>બાઇક નંબર</th>
+                                    <th>કુલ</th>
+                                    <th>આપેલું</th>
+                                    <th>બાકી</th>
+                                    <th>તારીખ</th>
+                                    <th>એક્શન</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in monthly_services[month] %}
+                                <tr>
+                                    <td>{{ s.customer_name }}</td>
+                                    <td>{{ s.bike_number }}</td>
+                                    <td>₹{{ s.total }}</td>
+                                    <td>₹{{ s.paid }}</td>
+                                    <td {% if s.pending > 0 %}class="text-danger fw-bold"{% endif %}>
+                                        ₹{{ s.pending }}
+                                    </td>
+                                    <td>{{ s.created_at.strftime('%d-%m-%Y') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('bill', id=s._id) }}" 
+                                           class="btn btn-info btn-sm">બિલ</a>
+                                        <a href="{{ url_for('edit_service', id=s._id) }}" 
+                                           class="btn btn-warning btn-sm">એડિટ</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info text-center py-4">
+            <h5>હજુ સુધી કોઈ સર્વિસ નથી</h5>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

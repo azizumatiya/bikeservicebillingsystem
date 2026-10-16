@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-center mb-4">સ્વાગત છે Bike Service Appમાં</h1>
+
+<!-- Report Filter Section (unchanged) -->
+<div class="card shadow-lg mb-5">
+    <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">આવક રિપોર્ટ</h3>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4 g-3">
+            <div class="col-md-3">
+                <label class="form-label">From Date</label>
+                <input type="date" id="fromDate" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">To Date</label>
+                <input type="date" id="toDate" class="form-control">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button id="loadCustomRange" class="btn btn-primary w-100">Date Range જુઓ</button>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button id="loadMonthly" class="btn btn-success w-100">મહિના/વર્ષ રિપોર્ટ</button>
+            </div>
+        </div>
+
+        <div id="monthlySection">
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">મહિનો</label>
+                    <select id="monthSelect" class="form-select">
+                        <option value="">આખું વર્ષ</option>
+                        {% for m in range(1,13) %}
+                        <option value="{{ m }}">{{ ['જાન્યુઆરી','ફેબ્રુઆરી','માર્ચ','એપ્રિલ','મે','જૂન','જુલાઈ','ઓગસ્ટ','સપ્ટેમ્બર','ઓક્ટોબર','નવેમ્બર','ડિસેમ્બર'][m-1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">વર્ષ</label>
+                    <select id="yearSelect" class="form-select">
+                        {% for y in years %}
+                        <option value="{{ y }}" {% if y == years[0] %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <canvas id="monthlyChart" height="120" class="mb-4"></canvas>
+        </div>
+
+        <div class="row text-center mb-4">
+            <div class="col-md-4">
+                <div class="card border-primary border-3">
+                    <div class="card-body">
+                        <h5>ઓનલાઈન યુક્તિ</h5>
+                        <h3 id="onlineTotal">₹0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-success border-3">
+                    <div class="card-body">
+                        <h5>ઓફલાઈન યુક્તિ</h5>
+                        <h3 id="offlineTotal">₹0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-warning border-3">
+                    <div class="card-body">
+                        <h5>કુલ આવક</h5>
+                        <h3 id="grandTotal">₹0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dateWiseSection" class="mt-4" style="display: none;">
+            <h4 id="dateWiseTitle">તારીખ વાઇઝ વિગતો</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="dateWiseTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>તારીખ</th>
+                            <th>ઓનલાઈન (₹)</th>
+                            <th>ઓફલાઈન (₹)</th>
+                            <th>કુલ (₹)</th>
+                            <th>સર્વિસીસ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dateWiseBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- All Existing Services with Edit & Delete -->
+<h2 class="mt-5">બધી એક્ઝિસ્ટિંગ સર્વિસીસ (મહિના વાઇઝ)</h2>
+{% if sorted_months %}
+    {% for month in sorted_months %}
+        <h4 class="mt-4">{{ month }} સર્વિસીસ</h4>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>સેક્શન</th>
+                        <th>ગ્રાહકનું નામ</th>
+                        <th>બાઇક નંબર</th>
+                        <th>કુલ</th>
+                        <th>બાકી</th>
+                        <th>તારીખ</th>
+                        <th>એક્શન</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in monthly_services[month] %}
+                    <tr>
+                        <td>{{ s.section | capitalize }}</td>
+                        <td>{{ s.customer_name or '--' }}</td>
+                        <td>{{ s.bike_number or '--' }}</td>
+                        <td>₹{{ s.total|round(2) }}</td>
+                        <td class="{% if s.pending > 0 %}text-danger fw-bold{% else %}text-success{% endif %}">
+                            ₹{{ s.pending|round(2) }}
+                        </td>
+                        <td>{{ s.created_at.strftime('%d-%m-%Y') }}</td>
+                        <td>
+                            <a href="{{ url_for('bill', id=s._id) }}" 
+                               class="btn btn-info btn-sm">બિલ જુઓ</a>
+                            <a href="{{ url_for('edit_service', id=s._id) }}" 
+                               class="btn btn-warning btn-sm">એડિટ</a>
+                            <button class="btn btn-danger btn-sm delete-btn" 
+                                    data-id="{{ s._id }}" 
+                                    data-name="{{ s.customer_name | e or 'ગ્રાહક' }}">
+                                ડિલીટ
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+{% else %}
+    <p class="text-center text-muted">કોઈ સર્વિસ મળી નથી.</p>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Report script (unchanged)
+let chart = null;
+
+async function updateReport(isRange = false) {
+    let url = '/monthly_report_data?';
+    let title = '';
+
+    if (isRange) {
+        const from = document.getElementById('fromDate').value;
+        const to   = document.getElementById('toDate').value;
+        if (!from || !to) {
+            alert('From અને To તારીખ બંને પસંદ કરો');
+            return;
+        }
+        url += `from=${from}&to=${to}`;
+        title = `તારીખ ${from} થી ${to} સુધી`;
+        document.getElementById('monthlySection').style.display = 'none';
+    } else {
+        const year  = document.getElementById('yearSelect').value;
+        const month = document.getElementById('monthSelect').value;
+        url += `year=${year}`;
+        if (month) url += `&month=${month}`;
+        title = month ? `${document.querySelector('#monthSelect option:checked').text} ${year}` : `વર્ષ ${year}`;
+        document.getElementById('monthlySection').style.display = 'block';
+    }
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    document.getElementById('onlineTotal').textContent  = '₹' + data.selected.online.toLocaleString('gu-IN');
+    document.getElementById('offlineTotal').textContent = '₹' + data.selected.offline.toLocaleString('gu-IN');
+    document.getElementById('grandTotal').textContent   = '₹' + data.selected.total.toLocaleString('gu-IN');
+
+    if (!isRange && data.months) {
+        if (chart) chart.destroy();
+        const ctx = document.getElementById('monthlyChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.months,
+                datasets: [
+                    { label: 'ઓનલાઈન', data: data.online, backgroundColor: 'rgba(54,162,235,0.6)' },
+                    { label: 'ઓફલાઈન', data: data.offline, backgroundColor: 'rgba(75,192,192,0.6)' }
+                ]
+            },
+            options: {
+                scales: { y: { beginAtZero: true } },
+                plugins: { title: { display: true, text: title + ' આવક' } }
+            }
+        });
+    }
+
+    const section = document.getElementById('dateWiseSection');
+    const tbody   = document.getElementById('dateWiseBody');
+    tbody.innerHTML = '';
+
+    if (data.date_wise && data.date_wise.length > 0) {
+        section.style.display = 'block';
+        document.getElementById('dateWiseTitle').textContent = title + ' → તારીખ વાઇઝ';
+
+        data.date_wise.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.date.split('-').reverse().join('-')}</td>
+                <td class="text-end">${item.online.toLocaleString('gu-IN')}</td>
+                <td class="text-end">${item.offline.toLocaleString('gu-IN')}</td>
+                <td class="text-end fw-bold">${item.total.toLocaleString('gu-IN')}</td>
+                <td class="text-center">${item.count}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } else {
+        section.style.display = 'none';
+    }
+}
+
+document.getElementById('loadCustomRange').addEventListener('click', () => updateReport(true));
+document.getElementById('loadMonthly').addEventListener('click', () => updateReport(false));
+window.onload = () => updateReport(false);
+
+// Delete button AJAX confirmation
+document.addEventListener('click', async function(e) {
+    if (e.target.classList.contains('delete-btn')) {
+        const name = e.target.getAttribute('data-name');
+        if (!confirm(`આ સર્વિસ (${name}) ડિલીટ કરવા માંગો છો?`)) return;
+
+        const id = e.target.getAttribute('data-id');
+        try {
+            const res = await fetch(`/delete_service/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('સર્વિસ ડિલીટ થઈ ગઈ');
+                location.reload();  // Page refresh to show updated list
+            } else {
+                alert('ભૂલ: ' + (data.message || 'કંઈક ખોટું થયું'));
+            }
+        } catch (err) {
+            alert('નેટવર્ક ભૂલ: ' + err.message);
+        }
+    }
+});
+</script>
+{% endblock %}
